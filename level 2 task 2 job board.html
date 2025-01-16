@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dream Jobs Hub</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: lavender;
+            color: #333;
+        }
+
+        header {
+            text-align: center;
+            padding: 20px;
+            background-color: #6a5acd;
+            color: white;
+        }
+
+        main {
+            padding: 20px;
+        }
+
+        #search {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+
+        #searchBar {
+            padding: 10px;
+            width: 300px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        #searchButton {
+            padding: 10px;
+            margin-left: 10px;
+            background-color: #6a5acd;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        #jobListings {
+            padding: 20px;
+        }
+
+        #jobsContainer {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 20px;
+        }
+
+        .job {
+            border: 1px solid #ccc;
+            padding: 15px;
+            border-radius: 8px;
+            background-color: white;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        .job button {
+            margin-top: 10px;
+            padding: 10px;
+            background-color: #6a5acd;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        footer {
+            text-align: center;
+            padding: 10px;
+            background-color: #333;
+            color: white;
+        }
+
+        #modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            display: none; /* Changed from "flex" to "none" */
+            justify-content: center;
+            align-items: center;
+        }
+
+        #modal.active {
+            display: flex; /* Display the modal only when the "active" class is added */
+        }
+
+        #modalContent {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            width: 80%;
+            max-width: 500px;
+            position: relative;
+        }
+
+        #closeModal {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: none;
+            border: none;
+            font-size: 20px;
+            cursor: pointer;
+        }
+
+        @media (max-width: 768px) {
+            #jobsContainer {
+                grid-template-columns: 1fr;
+            }
+
+            #searchBar {
+                width: 100%;
+            }
+        }
+    </style>
+    <script>
+        const jobs = [
+            { id: 1, title: "Frontend Developer", company: "TechCorp", location: "Remote", details: "Build amazing user interfaces." },
+            { id: 2, title: "Backend Developer", company: "DataSolutions", location: "New York", details: "Develop robust backend systems." },
+            { id: 3, title: "Project Manager", company: "Innovate Inc.", location: "San Francisco", details: "Manage and lead projects." }
+        ];
+
+        function loadJobs() {
+            const jobsContainer = document.getElementById('jobsContainer');
+            jobsContainer.innerHTML = jobs.map(job => `
+                <div class="job">
+                    <h3>${job.title}</h3>
+                    <p>${job.company} - ${job.location}</p>
+                    <button onclick="viewJob(${job.id})">View Details</button>
+                </div>
+            `).join('');
+        }
+
+        function searchJobs() {
+            const query = document.getElementById('searchBar').value.toLowerCase();
+            const filteredJobs = jobs.filter(job => 
+                job.title.toLowerCase().includes(query) ||
+                job.company.toLowerCase().includes(query) ||
+                job.location.toLowerCase().includes(query)
+            );
+
+            const jobsContainer = document.getElementById('jobsContainer');
+            jobsContainer.innerHTML = filteredJobs.map(job => `
+                <div class="job">
+                    <h3>${job.title}</h3>
+                    <p>${job.company} - ${job.location}</p>
+                    <button onclick="viewJob(${job.id})">View Details</button>
+                </div>
+            `).join('');
+        }
+
+        function viewJob(id) {
+            const job = jobs.find(j => j.id === id);
+            if (job) {
+                const modal = document.getElementById('modal');
+                const modalBody = document.getElementById('modalBody');
+                modalBody.innerHTML = `
+                    <h2>${job.title}</h2>
+                    <p>${job.company} - ${job.location}</p>
+                    <p>${job.details}</p>
+                `;
+                modal.classList.add('active');
+            }
+        }
+
+        function closeModal() {
+            const modal = document.getElementById('modal');
+            modal.classList.remove('active');
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            document.getElementById('searchButton').addEventListener('click', searchJobs);
+            document.getElementById('closeModal').addEventListener('click', closeModal);
+            loadJobs();
+        });
+    </script>
+</head>
+<body>
+    <header>
+        <h1>Welcome to Dream Jobs Hub</h1>
+        <p>Your dream job is just a few clicks away.</p>
+    </header>
+
+    <main>
+        <!-- Search Bar -->
+        <section id="search">
+            <input type="text" id="searchBar" placeholder="Search for jobs...">
+            <button id="searchButton">Search</button>
+        </section>
+
+        <!-- Featured Job Listings -->
+        <section id="jobListings">
+            <h2>Featured Jobs</h2>
+            <div id="jobsContainer"></div>
+        </section>
+    </main>
+
+    <footer>
+        <p>Dream Jobs Hub &copy; 2025</p>
+    </footer>
+
+    <!-- Modal for Job Details -->
+    <div id="modal">
+        <div id="modalContent">
+            <button id="closeModal">&times;</button>
+            <div id="modalBody"></div>
+        </div>
+    </div>
+</body>
+</html>
